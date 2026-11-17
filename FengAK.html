@@ -276,7 +276,7 @@
     <div class="panel">
       <div class="input-group">
         <label data-i18n="labelUrl">TARGET URL</label>
-        <input type="url" id="targetUrl" value="https://httpbin.org/get" placeholder="https://example.com/api">
+        <input type="url" id="targetUrl" value="" placeholder="https://example.com/api">
       </div>
       <div class="input-group">
         <label data-i18n="labelConcurrency">CONCURRENCY</label>
@@ -339,7 +339,7 @@
       let totalRequests = 200;
       let concurrency = 8;
       let timeoutMs = 5000;
-      let targetUrl = 'https://httpbin.org/get';
+      let targetUrl = '';
       let pendingCount = 0;
       let startedRequests = 0;
 
