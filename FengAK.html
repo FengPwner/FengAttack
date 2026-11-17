@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FengAK</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #000;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      color: #00ff41;
+    }
+    .container {
+      max-width: 1000px;
+      width: 100%;
+      background: #0a0a0a;
+      border: 1px solid #00ff41;
+      padding: 28px 30px;
+      box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+      position: relative;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .lang-switch {
+      display: flex;
+      gap: 6px;
+    }
+    .lang-btn {
+      background: #000;
+      border: 1px solid #00aa2a;
+      color: #00aa2a;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 1px;
+      font-family: 'Courier New', monospace;
+    }
+    .lang-btn.active {
+      background: #00ff41;
+      color: #000;
+      border-color: #00ff41;
+    }
+    .lang-btn:hover:not(.active) {
+      border-color: #00ff41;
+      color: #00ff41;
+    }
+    h1 {
+      color: #00ff41;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
+    }
+    h1 span {
+      background: #00ff41;
+      padding: 2px 10px;
+      font-size: 0.8rem;
+      color: #000;
+      letter-spacing: 1px;
+      margin-left: 10px;
+    }
+    .subtitle {
+      color: #00aa2a;
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+      border-left: 2px solid #00ff41;
+      padding-left: 16px;
+      letter-spacing: 1px;
+    }
+    .panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+      background: #050505;
+      padding: 22px 20px;
+      border: 1px solid #00aa2a;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .input-group label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      color: #00aa2a;
+    }
+    .input-group input {
+      background: #000;
+      border: 1px solid #00aa2a;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: #00ff41;
+      outline: none;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.5px;
+    }
+    .input-group input:focus {
+      border-color: #00ff41;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.4);
+    }
+    .input-group input::placeholder {
+      color: #005510;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    button {
+      background: #000;
+      border: 1px solid #00ff41;
+      color: #00ff41;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 14px 28px;
+      cursor: pointer;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-family: 'Courier New', monospace;
+      transition: 0.15s;
+    }
+    button.primary {
+      background: #001a00;
+      box-shadow: 0 0 12px rgba(0, 255, 65, 0.3);
+    }
+    button.primary:hover:not(:disabled) {
+      background: #00ff41;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+    }
+    button.danger {
+      border-color: #ff4141;
+      color: #ff4141;
+      background: #1a0000;
+    }
+    button.danger:hover:not(:disabled) {
+      background: #ff4141;
+      color: #000;
+      box-shadow: 0 0 20px rgba(255, 65, 65, 0.6);
+    }
+    button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      box-shadow: none;
+      pointer-events: none;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+    .stat-card {
+      background: #050505;
+      border: 1px solid #00aa2a;
+      padding: 18px 12px;
+      text-align: center;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #00aa2a;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #00ff41;
+      line-height: 1.2;
+      text-shadow: 0 0 15px rgba(0, 255, 65, 0.6);
+    }
+    .stat-unit {
+      font-size: 0.8rem;
+      color: #007a1a;
+      margin-left: 4px;
+      font-weight: 400;
+    }
+    .log-area {
+      background: #000;
+      padding: 16px 18px;
+      border: 1px solid #00aa2a;
+      font-family: 'Courier New', monospace;
+      height: 140px;
+      overflow-y: auto;
+      color: #00cc33;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      scrollbar-width: thin;
+      scrollbar-color: #00ff41 #000;
+    }
+    .log-area::-webkit-scrollbar {
+      width: 6px;
+    }
+    .log-area::-webkit-scrollbar-track {
+      background: #000;
+    }
+    .log-area::-webkit-scrollbar-thumb {
+      background: #00aa2a;
+    }
+    .log-area div {
+      border-bottom: 1px solid rgba(0, 170, 42, 0.2);
+      padding: 3px 0;
+    }
+    .log-area .error { color: #ff4141; }
+    .log-area .success { color: #00ff41; }
+    .log-area .info { color: #00aa2a; }
+    .footer-note {
+      margin-top: 18px;
+      font-size: 0.7rem;
+      color: #005510;
+      text-align: center;
+      border-top: 1px solid #00aa2a;
+      padding-top: 16px;
+      letter-spacing: 1px;
+    }
+    .footer-note a {
+      color: #00aa2a;
+      text-decoration: none;
+      border-bottom: 1px dotted #00aa2a;
+    }
+    .footer-note a:hover {
+      color: #00ff41;
+      border-bottom-color: #00ff41;
+    }
+    .cursor-blink {
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    @media (max-width: 700px) {
+      .container { padding: 20px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 1.2rem; }
+      .panel { grid-template-columns: 1fr; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <h1>FengAK <span>V1.0</span></h1>
+      <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" data-lang="zh" onclick="setLang('zh')">中文</button>
+      </div>
+    </div>
+
+    <div class="subtitle" data-i18n="subtitle">MULTI-THREAD CONCURRENT REQUESTS // REAL-TIME THROUGHPUT MONITOR</div>
+
+    <div class="panel">
+      <div class="input-group">
+        <label data-i18n="labelUrl">TARGET URL</label>
+        <input type="url" id="targetUrl" value="https://httpbin.org/get" placeholder="https://example.com/api">
+      </div>
+      <div class="input-group">
+        <label data-i18n="labelConcurrency">CONCURRENCY</label>
+        <input type="number" id="concurrency" min="1" max="64" value="8" step="1">
+      </div>
+      <div class="input-group">
+        <label data-i18n="labelTotal">TOTAL REQUESTS</label>
+        <input type="number" id="totalRequests" min="1" max="5000" value="200" step="10">
+      </div>
+      <div class="input-group">
+        <label data-i18n="labelTimeout">TIMEOUT (MS)</label>
+        <input type="number" id="timeout" min="100" max="30000" value="5000" step="100">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="startBtn" onclick="startTest()" data-i18n="btnStart">START</button>
+      <button class="danger" id="stopBtn" onclick="stopTest()" disabled data-i18n="btnStop">STOP</button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label" data-i18n="statSuccess">SUCCESS</div>
+        <div class="stat-value" id="successCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label" data-i18n="statFailed">FAILED</div>
+        <div class="stat-value" id="failCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label" data-i18n="statRps">RPS</div>
+        <div class="stat-value" id="rpsValue">0<span class="stat-unit">req/s</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label" data-i18n="statActive">ACTIVE</div>
+        <div class="stat-value" id="activeCount">0</div>
+      </div>
+    </div>
+
+    <div class="log-area" id="logContainer">
+      <div class="info">[SYS] READY. CONFIGURE PARAMETERS AND INITIATE TEST.<span class="cursor-blink">_</span></div>
+    </div>
+
+    <div class="footer-note" data-i18n="footer">
+      FOR AUTHORIZED TESTING ONLY. SET CONCURRENCY RESPONSIBLY. | AUTHOR: <a href="https://github.com/FengPwner" target="_blank" rel="noopener noreferrer">FengPwner</a>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      let isRunning = false;
+      let abortController = null;
+      let successCount = 0;
+      let failCount = 0;
+      let activeRequests = 0;
+      let lastRpsUpdate = performance.now();
+      let lastSuccessCount = 0;
+      let lastFailCount = 0;
+      let rpsInterval = null;
+      let totalRequests = 200;
+      let concurrency = 8;
+      let timeoutMs = 5000;
+      let targetUrl = 'https://httpbin.org/get';
+      let pendingCount = 0;
+      let startedRequests = 0;
+
+      const successEl = document.getElementById('successCount');
+      const failEl = document.getElementById('failCount');
+      const rpsEl = document.getElementById('rpsValue');
+      const activeEl = document.getElementById('activeCount');
+      const logContainer = document.getElementById('logContainer');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const targetUrlInput = document.getElementById('targetUrl');
+      const concurrencyInput = document.getElementById('concurrency');
+      const totalRequestsInput = document.getElementById('totalRequests');
+      const timeoutInput = document.getElementById('timeout');
+
+      const i18n = {
+        en: {
+          subtitle: 'MULTI-THREAD CONCURRENT REQUESTS // REAL-TIME THROUGHPUT MONITOR',
+          labelUrl: 'TARGET URL',
+          labelConcurrency: 'CONCURRENCY',
+          labelTotal: 'TOTAL REQUESTS',
+          labelTimeout: 'TIMEOUT (MS)',
+          btnStart: 'START',
+          btnStop: 'STOP',
+          statSuccess: 'SUCCESS',
+          statFailed: 'FAILED',
+          statRps: 'RPS',
+          statActive: 'ACTIVE',
+          footer: 'FOR AUTHORIZED TESTING ONLY. SET CONCURRENCY RESPONSIBLY. | AUTHOR: ',
+          sysReady: '[SYS] READY. CONFIGURE PARAMETERS AND INITIATE TEST.',
+          testHalted: 'TEST HALTED BY USER',
+          testAlready: 'TEST ALREADY RUNNING',
+          urlRequired: 'TARGET URL REQUIRED',
+          invalidUrl: 'INVALID URL FORMAT',
+          statsReset: 'STATS RESET. READY.',
+          testInit: 'TEST INITIATED | TARGET: {url} | CONCURRENCY: {c} | TOTAL: {t} | TIMEOUT: {to}ms',
+          modeNote: 'MODE: no-cors. REQUESTS WILL REACH SERVER. RESPONSE STATUS UNREADABLE.',
+          allComplete: 'ALL REQUESTS COMPLETE',
+          testComplete: 'TEST COMPLETE | SUCCESS: {s} | FAILED: {f}',
+          requestFailed: 'REQUEST FAILED ({n}): {msg}',
+          timeout: 'TIMEOUT',
+          networkError: 'NETWORK ERROR',
+          moduleLoaded: 'NETWORK STRESS TEST MODULE LOADED. AWAITING INPUT.'
+        },
+        zh: {
+          subtitle: '多线程并发请求 // 实时吞吐量监控',
+          labelUrl: '目标 URL',
+          labelConcurrency: '并发数',
+          labelTotal: '总请求数',
+          labelTimeout: '超时 (毫秒)',
+          btnStart: '开始',
+          btnStop: '停止',
+          statSuccess: '成功',
+          statFailed: '失败',
+          statRps: '每秒请求数',
+          statActive: '进行中',
+          footer: '仅限授权测试。请合理设置并发数。 | 作者：',
+          sysReady: '[系统] 就绪。配置参数后开始测试。',
+          testHalted: '测试已被用户终止',
+          testAlready: '测试已在运行中',
+          urlRequired: '目标 URL 不能为空',
+          invalidUrl: 'URL 格式无效',
+          statsReset: '统计已重置。就绪。',
+          testInit: '测试启动 | 目标: {url} | 并发: {c} | 总数: {t} | 超时: {to}ms',
+          modeNote: '模式：no-cors。请求将送达服务器，但无法读取响应状态。',
+          allComplete: '所有请求已完成',
+          testComplete: '测试完成 | 成功: {s} | 失败: {f}',
+          requestFailed: '请求失败 ({n}): {msg}',
+          timeout: '超时',
+          networkError: '网络错误',
+          moduleLoaded: '网络压力测试模块已加载。等待输入。'
+        }
+      };
+
+      let currentLang = 'en';
+
+      function t(key, vars) {
+        let str = i18n[currentLang][key] || i18n.en[key] || key;
+        if (vars) {
+          Object.keys(vars).forEach(k => {
+            str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
+          });
+        }
+        return str;
+      }
+
+      window.setLang = function(lang) {
+        if (!i18n[lang]) return;
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (key === 'footer') {
+            el.innerHTML = t('footer') + '<a href="https://github.com/FengPwner" target="_blank" rel="noopener noreferrer">FengPwner</a>';
+          } else {
+            el.textContent = t(key);
+          }
+        });
+        document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+      };
+
+      function log(message, type = 'info') {
+        const div = document.createElement('div');
+        div.className = type;
+        const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        div.textContent = `[${time}] ${message}`;
+        logContainer.appendChild(div);
+        logContainer.scrollTop = logContainer.scrollHeight;
+        if (logContainer.children.length > 200) {
+          logContainer.removeChild(logContainer.firstChild);
+        }
+      }
+
+      function updateStatsUI() {
+        successEl.textContent = successCount;
+        failEl.textContent = failCount;
+        activeEl.textContent = activeRequests;
+      }
+
+      function updateRps() {
+        const now = performance.now();
+        const elapsedSec = (now - lastRpsUpdate) / 1000;
+        if (elapsedSec < 0.2) return;
+        const currentTotal = successCount + failCount;
+        const lastTotal = lastSuccessCount + lastFailCount;
+        const delta = currentTotal - lastTotal;
+        const rps = delta / elapsedSec;
+        rpsEl.innerHTML = `${rps.toFixed(1)}<span class="stat-unit">req/s</span>`;
+        lastRpsUpdate = now;
+        lastSuccessCount = successCount;
+        lastFailCount = failCount;
+      }
+
+      function resetStats() {
+        successCount = 0;
+        failCount = 0;
+        activeRequests = 0;
+        pendingCount = 0;
+        startedRequests = 0;
+        lastSuccessCount = 0;
+        lastFailCount = 0;
+        lastRpsUpdate = performance.now();
+        updateStatsUI();
+        rpsEl.innerHTML = `0<span class="stat-unit">req/s</span>`;
+        logContainer.innerHTML = '';
+        log(t('statsReset'), 'info');
+      }
+
+      window.stopTest = function() {
+        if (!isRunning) return;
+        isRunning = false;
+        if (abortController) {
+          abortController.abort();
+          abortController = null;
+        }
+        if (rpsInterval) {
+          clearInterval(rpsInterval);
+          rpsInterval = null;
+        }
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        log(t('testHalted'), 'error');
+        activeRequests = 0;
+        updateStatsUI();
+      };
+
+      function finishRequest(success, errorMsg = '') {
+        activeRequests = Math.max(0, activeRequests - 1);
+        pendingCount = Math.max(0, pendingCount - 1);
+        if (success) {
+          successCount++;
+        } else {
+          failCount++;
+          if (errorMsg && !errorMsg.includes('abort')) {
+            if (failCount % 5 === 0) {
+              log(t('requestFailed', { n: failCount, msg: errorMsg }), 'error');
+            }
+          }
+        }
+        updateStatsUI();
+        if (isRunning) {
+          if (startedRequests >= totalRequests && activeRequests === 0 && pendingCount === 0) {
+            log(t('allComplete'), 'success');
+            setTimeout(() => {
+              if (isRunning) {
+                stopTest();
+                log(t('testComplete', { s: successCount, f: failCount }), 'info');
+              }
+            }, 100);
+          }
+        }
+      }
+
+      async function sendRequest(index) {
+        if (!isRunning) return;
+        activeRequests++;
+        updateStatsUI();
+        const localController = new AbortController();
+        const signal = localController.signal;
+        const timeoutId = setTimeout(() => {
+          if (!signal.aborted) {
+            localController.abort(new Error('timeout'));
+          }
+        }, timeoutMs);
+        let globalAbortListener = null;
+        if (abortController && abortController.signal) {
+          if (abortController.signal.aborted) {
+            localController.abort();
+          } else {
+            globalAbortListener = () => {
+              localController.abort();
+            };
+            abortController.signal.addEventListener('abort', globalAbortListener);
+          }
+        }
+        try {
+          await fetch(targetUrl, {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-store',
+            credentials: 'omit',
+            signal: signal,
+            redirect: 'follow'
+          });
+          clearTimeout(timeoutId);
+          if (globalAbortListener) {
+            abortController.signal.removeEventListener('abort', globalAbortListener);
+          }
+          finishRequest(true);
+        } catch (err) {
+          clearTimeout(timeoutId);
+          if (globalAbortListener) {
+            abortController.signal.removeEventListener('abort', globalAbortListener);
+          }
+          if (err.name === 'AbortError' || (err.message && err.message.includes('abort'))) {
+            if (err.message && err.message.includes('timeout')) {
+              finishRequest(false, t('timeout'));
+            } else {
+              activeRequests = Math.max(0, activeRequests - 1);
+              pendingCount = Math.max(0, pendingCount - 1);
+              updateStatsUI();
+            }
+          } else {
+            finishRequest(false, err.message || t('networkError'));
+          }
+        } finally {
+          if (globalAbortListener && abortController) {
+            abortController.signal.removeEventListener('abort', globalAbortListener);
+          }
+        }
+      }
+
+      window.startTest = function() {
+        if (isRunning) {
+          log(t('testAlready'), 'error');
+          return;
+        }
+        targetUrl = targetUrlInput.value.trim();
+        if (!targetUrl) {
+          log(t('urlRequired'), 'error');
+          return;
+        }
+        try {
+          new URL(targetUrl);
+        } catch (e) {
+          log(t('invalidUrl'), 'error');
+          return;
+        }
+        concurrency = Math.min(64, Math.max(1, parseInt(concurrencyInput.value) || 8));
+        totalRequests = Math.min(5000, Math.max(1, parseInt(totalRequestsInput.value) || 200));
+        timeoutMs = Math.min(30000, Math.max(100, parseInt(timeoutInput.value) || 5000));
+        concurrencyInput.value = concurrency;
+        totalRequestsInput.value = totalRequests;
+        timeoutInput.value = timeoutMs;
+        resetStats();
+        abortController = new AbortController();
+        isRunning = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        log(t('testInit', { url: targetUrl, c: concurrency, t: totalRequests, to: timeoutMs }), 'info');
+        log(t('modeNote'), 'info');
+        lastRpsUpdate = performance.now();
+        lastSuccessCount = successCount;
+        lastFailCount = failCount;
+        if (rpsInterval) clearInterval(rpsInterval);
+        rpsInterval = setInterval(() => {
+          if (isRunning) {
+            updateRps();
+          } else {
+            if (rpsInterval) {
+              clearInterval(rpsInterval);
+              rpsInterval = null;
+            }
+          }
+        }, 200);
+        let launched = 0;
+        function launchNext() {
+          if (!isRunning) return;
+          if (launched >= totalRequests && activeRequests === 0) return;
+          while (isRunning && launched < totalRequests && activeRequests < concurrency) {
+            const requestIndex = launched;
+            launched++;
+            startedRequests = launched;
+            pendingCount++;
+            sendRequest(requestIndex).catch(e => {});
+          }
+          if (isRunning && (launched < totalRequests || activeRequests > 0)) {
+            setTimeout(() => {
+              if (isRunning) {
+                if (launched < totalRequests && activeRequests < concurrency) {
+                  launchNext();
+                } else if (launched >= totalRequests && activeRequests === 0) {
+                  if (isRunning && startedRequests >= totalRequests && activeRequests === 0) {
+                    log(t('allComplete'), 'success');
+                    stopTest();
+                  }
+                } else {
+                  setTimeout(() => { if (isRunning) launchNext(); }, 50);
+                }
+              }
+            }, 15);
+          } else if (launched >= totalRequests && activeRequests === 0) {
+            if (isRunning) {
+              log(t('allComplete'), 'success');
+              stopTest();
+            }
+          }
+        }
+        launchNext();
+      };
+
+      window.addEventListener('beforeunload', function() {
+        if (isRunning) stopTest();
+      });
+
+      log(t('moduleLoaded'), 'info');
+      setLang('en');
+    })();
+  </script>
+</body>
+</html>
